@@ -1,14 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import { useState } from "react";
+import Splash from "./components/Splash";
+import Login from "./pages/Login";
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
-    <div className="w-full max-w-[400px] min-h-screen bg-white mx-auto relative">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </Router>
+    <div className="w-full max-w-[400px] min-h-screen bg-black mx-auto relative">
+      {showSplash ? (
+        <Splash onFinish={() => setShowSplash(false)} />
+      ) : (
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+          </Routes>
+        </Router>
+      )}
     </div>
   );
 }
