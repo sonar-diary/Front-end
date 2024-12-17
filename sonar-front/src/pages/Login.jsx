@@ -34,13 +34,13 @@ export default function Login() {
   return (
     <div className="relative h-screen bg-black text-white" onClick={handleClick}>
       <div className="flex flex-col h-full">
-        <div className="flex-1 pt-8 px-6 text-center">
+        <div className="flex-1 pt-8 px-12 text-center">
           <h1 className="text-3xl font-bold mb-6">{slides[currentSlide].title}</h1>
           <p className="text-lg mb-3">{slides[currentSlide].description}</p>
           <p className="text-sm text-gray-400">{slides[currentSlide].subText}</p>
         </div>
 
-        <div className="relative w-full px-8 pb-10 space-y-4">
+        <div className="relative w-full px-16 pb-10 space-y-4">
           <div className="flex justify-center gap-3 mb-4">
             {slides.map((_, index) => (
               <div key={index} className={`w-2 h-2 rounded-full ${currentSlide === index ? "bg-white" : "bg-gray-600"}`} />

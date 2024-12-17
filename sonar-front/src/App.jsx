@@ -8,7 +8,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   return (
-    <div className="w-full max-w-[400px] min-h-screen bg-black mx-auto relative">
+    <div className="w-full max-w-[600px] min-h-screen bg-black mx-auto relative">
       {showSplash ? (
         <Splash onFinish={() => setShowSplash(false)} />
       ) : (
