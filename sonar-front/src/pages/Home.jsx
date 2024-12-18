@@ -1,11 +1,9 @@
-import Calendar from "../components/Calendar";
+import Calendar from "../components/Homepage/Calendar";
 
 function Home() {
   return (
     <div>
-      <h1>Calendar</h1>
       <Calendar />
-      <h2>DearMe</h2>
     </div>
   );
 }
