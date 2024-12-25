@@ -4,6 +4,7 @@ import Splash from "./components/Splash";
 import Login from "./pages/Login";
 import DrawingCanvas from "./pages/DrawingCanvas";
 import Home from "./pages/Home";
+import DearMeLetter from "./pages/DearMeLetter";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -21,10 +22,9 @@ function App() {
         // </Router>
         <Router>
           <Routes>
-
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Home />} />
-
+            <Route path="/dear-me" element={<DearMeLetter />} />
           </Routes>
         </Router>
       )}
