@@ -21,8 +21,10 @@ function App() {
         // </Router>
         <Router>
           <Routes>
-            <Route path="/" element={<DrawingCanvas />} /> {/* 임시로 변경 */}
-            <Route path="/login" element={<Login />} />
+
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+
           </Routes>
         </Router>
       )}
