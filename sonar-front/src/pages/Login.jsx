@@ -1,7 +1,34 @@
 import { useState } from "react";
+// 카카오 소셜 로그인 사용하기 위해 import!
+import KakaoLogin from "react-kakao-login";
 
 export default function Login() {
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const kakaoSuccess = (response) => {
+    console.log("카카오 로그인 성공", response);
+    console.log("전체 응답:", response);
+    // 아래 코드는 사용자 정보 확인하는 코드
+    try {
+      const { profile } = response;
+      if (profile) {
+        console.log("닉네임:", profile.nickname);
+        console.log("프로필 사진:", profile.thumbnail_image_url);
+        const userData = {
+          id: profile.id,
+          nickname: profile.properties.nickname,
+          profileImage: profile.properties.profile_image,
+          connectedAt: profile.connected_at,
+        };
+        console.log("정리된 사용자 정보:", userData);
+      }
+    } catch (error) {
+      console.error("사용자 정보 파싱 실패:", error);
+    }
+  };
+  const kakaoFail = (error) => {
+    console.log("카카오 로그인 실패", error);
+  };
 
   const slides = [
     {
@@ -56,15 +83,22 @@ export default function Login() {
             Google로 시작하기
           </button>
 
-          <button
-            className="w-full py-3 bg-[#FEE500] text-black rounded-full font-medium text-sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSocialLogin("Kakao");
-            }}
-          >
-            Kakao로 시작하기
-          </button>
+          <KakaoLogin
+            token="8f062d92f626700c83b00d7bf25aee69"
+            onSuccess={kakaoSuccess}
+            onFail={kakaoFail}
+            render={({ onClick }) => (
+              <button
+                className="w-full py-3 bg-[#FEE500] text-black rounded-full font-medium text-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
+                }}
+              >
+                kakao로 시작하기
+              </button>
+            )}
+          />
 
           <button
             className="w-full py-3 bg-[#03C75A] text-white rounded-full font-medium text-sm"
