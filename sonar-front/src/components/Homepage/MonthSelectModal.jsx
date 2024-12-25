@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import "./MonthSelectModal.css";
+import "../../style/MonthSelectModal.css";
 
 const MonthSelectModal = ({ isOpen, onClose, setCurrentDate, year, month }) => {
   const modalBackground = useRef();
