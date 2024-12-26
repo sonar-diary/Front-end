@@ -24,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/drawing" element={<DrawingCanvas />} />
             <Route path="/dear-me" element={<DearMeLetter />} />
           </Routes>
         </Router>
