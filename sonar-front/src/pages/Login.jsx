@@ -1,8 +1,12 @@
 import { useState } from "react";
 // 카카오 소셜 로그인 사용하기 위해 import!
 import KakaoLogin from "react-kakao-login";
+// 이동을 위한 useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  // 로그인 후 홈으로 이동을 위한 코드
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const kakaoSuccess = (response) => {
@@ -21,6 +25,7 @@ export default function Login() {
           connectedAt: profile.connected_at,
         };
         console.log("정리된 사용자 정보:", userData);
+        navigate("home");
       }
     } catch (error) {
       console.error("사용자 정보 파싱 실패:", error);
@@ -56,6 +61,7 @@ export default function Login() {
 
   const handleSocialLogin = (provider) => {
     console.log(`${provider} 소셜로그인 버튼`);
+    navigate("/home");
   };
 
   return (
