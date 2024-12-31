@@ -5,12 +5,13 @@ import Login from "./pages/Login";
 import DrawingCanvas from "./pages/DrawingCanvas";
 import Home from "./pages/Home";
 import DearMeLetter from "./pages/DearMeLetter";
+import Theme from "./pages/Theme";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   return (
-    <div className="w-full max-w-[600px] min-h-screen bg-black mx-auto relative">
+    <div className="w-full max-w-[400px] min-h-screen bg-black mx-auto relative">
       {showSplash ? (
         <Splash onFinish={() => setShowSplash(false)} />
       ) : (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/drawing" element={<DrawingCanvas />} />
             <Route path="/dear-me" element={<DearMeLetter />} />
+            <Route path="/theme" element={<Theme />} />
           </Routes>
         </Router>
       )}
