@@ -1,39 +1,11 @@
-import { useState } from "react";
-// 카카오 소셜 로그인 사용하기 위해 import!
-import KakaoLogin from "react-kakao-login";
-// 이동을 위한 useNavigate
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Login() {
+const Login = () => {
   // 로그인 후 홈으로 이동을 위한 코드
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const kakaoSuccess = (response) => {
-    console.log("카카오 로그인 성공", response);
-    console.log("전체 응답:", response);
-    // 아래 코드는 사용자 정보 확인하는 코드
-    try {
-      const { profile } = response;
-      if (profile) {
-        console.log("닉네임:", profile.nickname);
-        console.log("프로필 사진:", profile.thumbnail_image_url);
-        const userData = {
-          id: profile.id,
-          nickname: profile.properties.nickname,
-          profileImage: profile.properties.profile_image,
-          connectedAt: profile.connected_at,
-        };
-        console.log("정리된 사용자 정보:", userData);
-        navigate("home");
-      }
-    } catch (error) {
-      console.error("사용자 정보 파싱 실패:", error);
-    }
-  };
-  const kakaoFail = (error) => {
-    console.log("카카오 로그인 실패", error);
-  };
 
   const slides = [
     {
@@ -59,10 +31,63 @@ export default function Login() {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    console.log(`${provider} 소셜로그인 버튼`);
-    navigate("/home");
+  // 팝업창 크기 관련 설정
+  const width = 500;
+  const height = 500;
+  const left = window.screen.width / 2 - width / 2;
+  const top = window.screen.height / 2 - height / 2;
+
+  // 1. kakao
+  const handleKakaoLogin = () => {
+    const KAKAO_REST_API_KEY = import.meta.env.VITE_KAKAO_KEY;
+    const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}`;
+
+    window.open(KAKAO_AUTH_URL, "kakao login Popup", `width=${width},height=${height},left=${left},top=${top}`);
   };
+
+  // 2. naver
+  const handleNaverLogin = () => {
+    const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_ID;
+    const NAVER_REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
+    const STATE = "sonar-login";
+    const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${NAVER_REDIRECT_URI}`;
+
+    window.open(NAVER_AUTH_URL, "naver login Popup", `width=${width},height=${height},left=${left},top=${top}`);
+  };
+
+  // 인가코드 넘겨주는 거의 결과가 sonar JWT 토큰
+  const getJWTToken = (code, type) => {
+    // const url = '백엔드에게 받은 api url'
+    axios
+      // .get(`${url}?code=${code}&login-type=${type}`)
+      // .get(`백엔드에게 받은 api url?code=${code}&login-type=${type}`)
+      // .get(`http://localhost:8080?code=${code}&login-type=${type}`)
+      .get(`url?code=${code}&login-type=${type}`)
+
+      .then(() => {
+        // console.log("데이터 성공", response.data);
+        navigate("/home"); // 로그인 후 이동할 페이지로 이동
+      })
+      .catch((error) => {
+        console.error("에러발생:", error);
+        alert("로그인에 실패하였습니다."); // 실패 알림
+      });
+  };
+
+  useEffect(() => {
+    const handleMessageEvent = (event) => {
+      if (event.data.code && event.data.type) {
+        console.log("auth code :", event.data.code);
+        getJWTToken(event.data.code, event.data.type);
+      }
+    };
+    // 팝업창으로부터 인가코드 받아오는 이벤트 핸들러
+    window.addEventListener("message", handleMessageEvent);
+    return () => {
+      window.removeEventListener("message", handleMessageEvent);
+    };
+  }, []);
 
   return (
     <div className="relative h-screen bg-black text-white" onClick={handleClick}>
@@ -83,34 +108,27 @@ export default function Login() {
             className="w-full py-3 bg-white text-black rounded-full font-medium text-sm"
             onClick={(e) => {
               e.stopPropagation();
-              handleSocialLogin("Google");
+              // handleSocialLogin("Google");
             }}
           >
             Google로 시작하기
           </button>
 
-          <KakaoLogin
-            token="8f062d92f626700c83b00d7bf25aee69"
-            onSuccess={kakaoSuccess}
-            onFail={kakaoFail}
-            render={({ onClick }) => (
-              <button
-                className="w-full py-3 bg-[#FEE500] text-black rounded-full font-medium text-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClick();
-                }}
-              >
-                kakao로 시작하기
-              </button>
-            )}
-          />
+          <button
+            className="w-full py-3 bg-[#FEE500] text-black rounded-full font-medium text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleKakaoLogin();
+            }}
+          >
+            Kakao로 시작하기
+          </button>
 
           <button
             className="w-full py-3 bg-[#03C75A] text-white rounded-full font-medium text-sm"
             onClick={(e) => {
               e.stopPropagation();
-              handleSocialLogin("Naver");
+              handleNaverLogin();
             }}
           >
             Naver로 시작하기
@@ -119,4 +137,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;
