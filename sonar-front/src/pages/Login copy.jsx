@@ -57,71 +57,31 @@ const Login = () => {
   };
 
   // 인가코드 넘겨주는 거의 결과가 sonar JWT 토큰
-  // const getJWTToken = (code, type) => {
-  //   const url = "백엔드에게 받은 api url";
-  //   axios
-  //     .get(`${url}?code=${code}&login-type=${type}`)
-  //     .get(`백엔드에게 받은 api url?code=${code}&login-type=${type}`)
-  //     .get(`http://localhost:8080?code=${code}&login-type=${type}`)
-  //     .get(`url?code=${code}&login-type=${type}`)
-
-  //     .then(() => {
-  //       navigate("/home"); // 로그인 후 이동할 페이지로 이동
-  //     })
-  //     .catch((error) => {
-  //       console.error("에러발생:", error);
-  //       alert("로그인에 실패하였습니다."); // 실패 알림
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   const handleMessageEvent = (event) => {
-  //     if (event.data.code && event.data.type) {
-  //       console.log("auth code :", event.data.code);
-  //       getJWTToken(event.data.code, event.data.type);
-  //     }
-  //   };
-  //   // 팝업창으로부터 인가코드 받아오는 이벤트 핸들러
-  //   window.addEventListener("message", handleMessageEvent);
-  //   return () => {
-  //     window.removeEventListener("message", handleMessageEvent);
-  //   };
-  // }, []);
-
-  const handleMessageEvent = (event) => {
-    if (event.data.code && event.data.type) {
-      console.log("auth code:", event.data.code);
-      getUserInfo(event.data.code, event.data.type);
-    }
-  };
-
-  const getUserInfo = (code, type) => {
+  const getJWTToken = (code, type) => {
+    // const url = '백엔드에게 받은 api url'
     axios
-      .get(`http://localhost:8080/login/oauth2/callback/${type}`, {
-        params: { code },
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        withCredentials: true,
-      })
-      .then((response) => {
-        // 백엔드 응답에서 필요한 정보 추출
-        const { name, email, socialId } = response.data;
+      // .get(`${url}?code=${code}&login-type=${type}`)
+      // .get(`백엔드에게 받은 api url?code=${code}&login-type=${type}`)
+      // .get(`http://localhost:8080?code=${code}&login-type=${type}`)
+      .get(`url?code=${code}&login-type=${type}`)
 
-        // localStorage에 저장
-        localStorage.setItem("userName", name);
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("socialId", socialId);
-
-        navigate("/home");
+      .then(() => {
+        // console.log("데이터 성공", response.data);
+        navigate("/home"); // 로그인 후 이동할 페이지로 이동
       })
       .catch((error) => {
         console.error("에러발생:", error);
-        alert("로그인에 실패하였습니다.");
+        alert("로그인에 실패하였습니다."); // 실패 알림
       });
   };
 
   useEffect(() => {
+    const handleMessageEvent = (event) => {
+      if (event.data.code && event.data.type) {
+        console.log("auth code :", event.data.code);
+        getJWTToken(event.data.code, event.data.type);
+      }
+    };
     // 팝업창으로부터 인가코드 받아오는 이벤트 핸들러
     window.addEventListener("message", handleMessageEvent);
     return () => {
