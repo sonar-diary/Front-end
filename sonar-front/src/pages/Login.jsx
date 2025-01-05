@@ -91,6 +91,7 @@ const Login = () => {
   const handleMessageEvent = (event) => {
     if (event.data.code && event.data.type) {
       console.log("auth code:", event.data.code);
+      console.log(event.data.type);
       getUserInfo(event.data.code, event.data.type);
     }
   };
