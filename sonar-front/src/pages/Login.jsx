@@ -91,16 +91,21 @@ const Login = () => {
   const handleMessageEvent = (event) => {
     if (event.data.code && event.data.type) {
       console.log("auth code:", event.data.code);
-      getUserInfo(event.data.code, event.data.type);
+      getUserInfo(event.data.code, event.data.type, event.data.state);
     }
   };
 
-  const getUserInfo = (code, type) => {
-    console.log("요청 시작:", code, type); // 요청 시작 시 로그
+  const getUserInfo = (code, type, state) => {
+    console.log("요청 시작:", { code, type, state });
+
+    const params = { code };
+    if (type === "naver" && state) {
+      params.state = state;
+    }
 
     axios
       .get(`http://localhost:8080/login/oauth2/callback/${type}`, {
-        params: { code },
+        params,
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
@@ -111,13 +116,12 @@ const Login = () => {
         if (id) {
           localStorage.setItem("userId", id);
           navigate("/home");
-          return; // 성공하면 여기서 함수 종료
+          return;
         }
       })
       .catch((error) => {
-        // 이미 localStorage에 userId가 저장되어 있다면
         if (localStorage.getItem("userId")) {
-          navigate("/home"); // 홈으로 이동
+          navigate("/home");
           return;
         }
         console.error("에러 상세 정보:", error);
