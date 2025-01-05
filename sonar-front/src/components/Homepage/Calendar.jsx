@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Lock, Unlock } from "lucide-react";
+import { Lock, Mail, Plus } from "lucide-react";
 import MonthSelectModal from "./MonthSelectModal";
+import DearMeAlert from "./DearMeAlert";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -20,6 +21,8 @@ const TEMP_LETTERS = [
 ];
 
 function Calendar({ activeTab, setActiveTab }) {
+  const [selectedLetter, setSelectedLetter] = useState(null);
+  const [showFutureLetterModal, setShowFutureLetterModal] = useState(false);
   const [monthModalOpen, setMonthModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const year = currentDate.getFullYear();
@@ -48,6 +51,12 @@ function Calendar({ activeTab, setActiveTab }) {
       const letterDate = letter.openDate;
       return letterDate.getDate() === date && letterDate.getMonth() === month && letterDate.getFullYear() === year;
     });
+  };
+
+  // 편지 삭제 핸들러
+  const handleDeleteLetter = (letterId) => {
+    // 실제 삭제 로직 구현 필요
+    console.log(`편지 ${letterId} 삭제됨`);
   };
 
   // 달력에 표시될 날짜들
@@ -104,41 +113,39 @@ function Calendar({ activeTab, setActiveTab }) {
       return (
         <div
           key={index}
-          className={`text-center p-1 sm:p-2 aspect-square rounded-[35%] flex flex-col
+          className={`text-center p-0.5 aspect-square rounded-[35%] flex flex-col
             ${isFuture ? "text-gray-600 cursor-not-allowed" : "hover:bg-gray-800 cursor-pointer rounded-lg"}`}
         >
-          <div className={`w-full aspect-square rounded-[35%] relative ${isToday ? "bg-gradient-to-r from-[#7969f4] to-[#822fd5]" : isFuture ? "bg-zinc-900" : "bg-zinc-700"} mb-0.5 sm:mb-1`}>
+          <div className={`w-full aspect-square rounded-[35%] relative ${isToday ? "bg-gradient-to-r from-[#7969f4] to-[#822fd5]" : isFuture ? "bg-zinc-900" : "bg-zinc-700"} mb-0.5`}>
             {isToday && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white text-xl">+</span>
+                <Plus className="w-4 h-4 text-white" />
               </div>
             )}
           </div>
-          <div className="text-center">{date}</div>
+          <div className="text-center text-xs">{date}</div>
         </div>
       );
     } else {
       // 편지 탭
+      const handleCellClick = () => {
+        if (hasLetter && isFuture) {
+          setSelectedLetter(getLetterForDate(date));
+          setShowFutureLetterModal(true);
+        }
+      };
+
       return (
         <div
           key={index}
-          className={`text-center p-1 sm:p-2 aspect-square rounded-[35%] flex flex-col
-      ${hasLetter ? "cursor-pointer" : "text-gray-600"}`}
+          onClick={handleCellClick}
+          className={`text-center p-0.5 aspect-square rounded-[35%] flex flex-col
+          ${hasLetter ? "cursor-pointer" : "text-gray-600"}`}
         >
-          <div
-            className={`w-full aspect-square rounded-[35%] relative ${
-              hasLetter
-                ? isFuture
-                  ? "bg-zinc-700" // 미래의 편지 - 잠금 상태 (더 밝은 회색으로 변경)
-                  : "bg-gradient-to-br from-purple-500 to-purple-700" // 과거의 편지 - 열람 가능
-                : "bg-zinc-900" // 편지 없음
-            } mb-0.5 sm:mb-1`}
-          >
-            {hasLetter && (
-              <div className="absolute inset-0 flex items-center justify-center">{isFuture ? <Lock className="w-5 h-5 text-purple-400" /> : <Unlock className="w-5 h-5 text-white" />}</div>
-            )}
+          <div className={`w-full aspect-square rounded-[35%] relative ${hasLetter ? (isFuture ? "bg-zinc-700" : "bg-gradient-to-r from-[#7969f4] to-[#822fd5]") : "bg-zinc-900"} mb-0.5`}>
+            {hasLetter && <div className="absolute inset-0 flex items-center justify-center">{isFuture ? <Lock className="w-3 h-3 text-white" /> : <Mail className="w-3 h-3 text-white" />}</div>}
           </div>
-          <div className="text-center">{date}</div>
+          <div className="text-center text-xs">{date}</div>
         </div>
       );
     }
@@ -157,7 +164,7 @@ function Calendar({ activeTab, setActiveTab }) {
                 console.log("모달 열림 :", true);
               }}
             >
-              {year}년 {month + 1}월{/* <span className="text-sm sm:text-lg ml-2 sm:ml-4">▼</span> */}
+              {year}년 {month + 1}월
             </h2>
           </div>
         </section>
@@ -174,7 +181,7 @@ function Calendar({ activeTab, setActiveTab }) {
           <button
             onClick={() => setActiveTab("letter")}
             className={`flex-1 py-2 px-4 font-medium text-sm sm:text-base transition-colors
-      ${activeTab === "letter" ? "text-white border-b-2 border-white" : "text-gray-400 hover:text-gray-300"}`}
+              ${activeTab === "letter" ? "text-white border-b-2 border-white" : "text-gray-400 hover:text-gray-300"}`}
           >
             나에게 쓰는 편지
           </button>
@@ -199,6 +206,9 @@ function Calendar({ activeTab, setActiveTab }) {
         {/* month 이동 모달 */}
         <MonthSelectModal isOpen={monthModalOpen} onClose={() => setMonthModalOpen(false)} currentDate={currentDate} setCurrentDate={setCurrentDate} year={year} month={month} />
       </div>
+
+      {/* 나쓰편 삭제 알림 모달 */}
+      <DearMeAlert isOpen={showFutureLetterModal} onClose={() => setShowFutureLetterModal(false)} letter={selectedLetter} onDelete={handleDeleteLetter} />
     </>
   );
 }

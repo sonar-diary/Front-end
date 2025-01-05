@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 const OauthWait = () => {
   const { loginType } = useParams();
+
   // 네이버 서버가 준 응답코드 읽기 (팝업창)
   const code = new URL(window.location.href).searchParams.get("code");
 
