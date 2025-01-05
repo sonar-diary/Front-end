@@ -91,12 +91,13 @@ const Login = () => {
   const handleMessageEvent = (event) => {
     if (event.data.code && event.data.type) {
       console.log("auth code:", event.data.code);
-      console.log(event.data.type);
       getUserInfo(event.data.code, event.data.type);
     }
   };
 
   const getUserInfo = (code, type) => {
+    console.log("요청 시작:", code, type); // 요청 시작 시 로그
+
     axios
       .get(`http://localhost:8080/login/oauth2/callback/${type}`, {
         params: { code },
@@ -106,18 +107,20 @@ const Login = () => {
         withCredentials: true,
       })
       .then((response) => {
-        // 백엔드 응답에서 필요한 정보 추출
-        const { name, email, socialId } = response.data;
-
-        // localStorage에 저장
-        localStorage.setItem("userName", name);
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("socialId", socialId);
-
-        navigate("/home");
+        const { id } = response.data;
+        if (id) {
+          localStorage.setItem("userId", id);
+          navigate("/home");
+          return; // 성공하면 여기서 함수 종료
+        }
       })
       .catch((error) => {
-        console.error("에러발생:", error);
+        // 이미 localStorage에 userId가 저장되어 있다면
+        if (localStorage.getItem("userId")) {
+          navigate("/home"); // 홈으로 이동
+          return;
+        }
+        console.error("에러 상세 정보:", error);
         alert("로그인에 실패하였습니다.");
       });
   };
