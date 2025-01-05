@@ -49,7 +49,7 @@ const MonthSelectModal = ({ isOpen, onClose, setCurrentDate, year, month }) => {
 
   return (
     <div ref={modalBackground} className="fixed inset-0 bg-black/50" onClick={handleBackgroundClick}>
-      <div className="fixed bottom-0 w-full max-w-[600px] mx-auto left-0 right-0 bg-zinc-900 rounded-t-3xl px-5 pb-8 pt-4">
+      <div className="fixed bottom-0 w-full max-w-[400px] mx-auto left-0 right-0 bg-zinc-900 rounded-t-3xl px-5 pb-8 pt-4">
         <div className="flex justify-between items-center mb-8">
           <span className="text-lg font-medium text-white">날짜 변경</span>
           <button onClick={() => onClose()} className="text-2xl text-white">
