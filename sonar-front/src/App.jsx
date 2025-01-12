@@ -5,7 +5,10 @@ import Login from "./pages/Login";
 import DrawingCanvas from "./pages/DrawingCanvas";
 import Home from "./pages/Home";
 import DearMeLetter from "./pages/DearMeLetter";
-import Theme from "./pages/Theme";
+import BackgroundColor from "./pages/BackgroundColor";
+import BeforeDrawing from "./pages/BeforeDrawing";
+import DalleTheme from "./pages/DalleTheme";
+import Detail from "./pages/Detail";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -27,7 +30,10 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/drawing" element={<DrawingCanvas />} />
             <Route path="/dear-me" element={<DearMeLetter />} />
-            <Route path="/theme" element={<Theme />} />
+            <Route path="/background-color" element={<BackgroundColor />} />
+            <Route path="/before-drawing" element={<BeforeDrawing />} />
+            <Route path="/dalle-theme" element={<DalleTheme />} />
+            <Route path="/detail" element={<Detail />} />
           </Routes>
         </Router>
       )}
